@@ -1,4 +1,7 @@
 #!/bin/bash
+# Prend deux arguments :
+# -	Nom de domaine
+# -	Adresse IP
 
 domaine="/etc/bind/db.dns.local"
 local="/etc/bind/named.conf.local"
@@ -12,11 +15,9 @@ db_file="/etc/bind/db.$rev_body"
 
 info="$1	IN	A	$2"
 local_zone="zone \"$rev_body.in-addr.arpa\" {\n\ttype master;\n\tfile \"/etc/bind/db.$rev_body\";\n};"
-db=";\n; BIND reverse data file for local loopback interface\n;\n\$TTL\t604800\n@       IN      SOA     dns.local. root.local. (\n\t\t\t\t\t\t\t   2         ; Serial\n\t\t\t\t\t\t 604800         ; Refresh\n\n\t\t\t\t\t\t  86400         ; Retry\n\t\t\t\t\t\t2419200         ; Expire\n\t\t\t\t\t\t 604800 )       ; Negative Cache TTL\n;\n@       IN      NS      dns.local.\n$end      IN      PTR     $1.local."
-db2="$end	IN	PTR	$1.local."
 
 # Ajout du domaine au domaine local
-echo -e "$info" >> "$domaine"
+# echo -e "$info" >> "$domaine"
 
 if [ -e $db_file ]; then
 	echo -e "$db2" >> "$db_file"
@@ -25,7 +26,23 @@ else
 	echo -e "$local_zone" >> "$local"
 
 	# Configuration de la rechercher inversée
-	echo -e "$db" > "$db_file"
+	cat << EOF > "$db_file"
+	;
+	; BIND reverse data file for local loopback interface
+	;
+	\$TTL	604800
+	
+	@       IN      SOA     dns.local. root.local. (
+				2         ; Serial
+	       604800         ; Refresh
+	        86400         ; Retry
+	      2419200         ; Expire
+	       604800 )       ; Negative Cache TTL
+	 ;
+	 @       IN      NS      dns.local.
+	 $end      IN      PTR     $1.local.
+	EOF
+	
 fi
 
 systemctl restart named
