@@ -17,7 +17,6 @@ dns10="\$TTL 15m\n@       IN SOA     dns.local. root.local. (\n\t2021082512     
 
 if [ -e $interface ]; then	
 	sudo systemctl start named
-	sudo systemctl status named
 else
 	# Création de l'interface réseau virtuelle
 	sudo echo -e "[NetDev]\nName = virtualeth0\nKind = dummy" > "$interface"

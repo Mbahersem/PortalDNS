@@ -27,5 +27,9 @@ exports.addDNS = (req, res) => {
             }
         });
     }
-    commandRunner(`sudo ../../scripts/add_dns.sh domain ip`);
+    commandRunner(`sudo ../scripts/add_dns.sh ${domain} ${ip}`);
+}
+
+exports.stopDNS = (req, res) => {
+    process.exit(0);
 }

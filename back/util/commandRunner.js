@@ -15,4 +15,4 @@ const commandRunner = (cmd) => {
     });
 }
 
-module.exports(commandRunner);
+module.exports = commandRunner;
