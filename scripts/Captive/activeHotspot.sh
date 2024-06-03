@@ -1,4 +1,6 @@
 #!/bin/bash
+# 1. Nom du hotspot
+# 2. Mot de passe
 
 creer_point_acces() {
     local nom_hotspot=$1

@@ -20,13 +20,14 @@ export default function Page() {
           domain: dnsName,
           description: description
         };
-
+        
+        if(submitted && ipAddress !== '' && dnsName !== '' && description !== '') {
+          const response = await axios.post('http://localhost:5000/add-dns', dataToSend);
+          console.log(`Réponse de la requête : ${response.data}`);
+        }
         setIpAddress('');
         setDnsName('');
         setDescription('');
-
-        const response = await axios.post('http://localhost:5000/add-dns', dataToSend);
-        console.log(`Réponse de la requête : ${response.data}`);
       } catch(err) {
         console.error(`Erreur lors de la requête : ${err}`);
       }

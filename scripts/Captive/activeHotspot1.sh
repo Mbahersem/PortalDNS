@@ -1,4 +1,6 @@
 #!/bin/bash
+# 1. Nom du hotspot
+# 2. Mot de passe
 
 activer_hotspot() {
     nom_hotspot=$1

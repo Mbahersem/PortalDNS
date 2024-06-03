@@ -1,3 +1,7 @@
+/*
+Script pour exécuter les commandes shell à partir de NodeJS
+*/
+
 const { exec } = require('child_process');
 const { stderr } = require('process');
 

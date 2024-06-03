@@ -18,7 +18,7 @@ exports.addDNS = (req, res) => {
         res.status(400).send('IP et nom de domaine obligatoires');
     } else {
         const sql = 'INSERT INTO dns (ip, domain, description, actif) VALUES (?, ?, ?, ?)';
-        db.run(sql, [ip, domain, description, 1], function(err) {
+        db.run(sql, [ip, domain, description, 0], function(err) {
             if(err) {
                 console.error(err.message);
                 res.status(500).send('Erreur interne');
@@ -32,4 +32,5 @@ exports.addDNS = (req, res) => {
 
 exports.stopDNS = (req, res) => {
     process.exit(0);
+    commandRunner('sudo systemctl stop named');
 }

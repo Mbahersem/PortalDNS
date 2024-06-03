@@ -15,17 +15,9 @@ local_zone="zone \"local\" {\n\ttype master;\n\tfile \"/etc/bind/db.dns.local\";
 dns_local="\$TTL 15m\n@             IN SOA     dns.local root.local. (\n\t\t  2021082512     ; n° série\n\t\t\t\t  1h     ; intervalle de rafraîchissement esclave\n\t\t\t\t 15m     ; intervalle de réessaie pour l’esclave\n\t\t\t\t  1w     ; temps d’expiration de la copie esclave\n\t\t\t\t  1h )   ; temps de cache NXDOMAIN\n\n\t\t\t  IN NS      dns.local\n; domaine vers adresse IP\ndns           IN A     10.42.0.1"
 dns10="\$TTL 15m\n@       IN SOA     dns.local. root.local. (\n\t2021082512     ; n° série\n\t\t\t1h     ; intervalle de rafraîchissement esclave\n\t\t   15m     ; intervalle de réessaie pour l’esclave\n\t\t\t1w     ; temps d’expiration de la copie esclave\n\t\t\t1h )   ; temps de cache NXDOMAIN\n\n\t\tIN NS      dns.local.\n\n; IP vers nom de domaine DNS\n1  IN PTR     dns.local.\n"
 
-if [ -e $interface ]; then	
+if [ -e $db_dns ]; then	
 	sudo systemctl start named
 else
-	# Création de l'interface réseau virtuelle
-	sudo echo -e "[NetDev]\nName = virtualeth0\nKind = dummy" > "$interface"
-	sudo echo -e "[Match]\nName = virtualeth0\n\n[Network]\nAddress = 10.10.10.1/24" > "$network"
-	
-	# Réinitialisation après création
-	sudo systemctl start systemd-networkd
-	sudo systemctl enable systemd-networkd
-	
 	# Ajout du serveur DNS local dans la liste des serveurs DNS fournis
 	echo "prepend local 10.42.0.1" >> "$dhcp_client"
 	
@@ -82,7 +74,7 @@ else
 	# dns    IN A   10.42.0.1
 	# EOF
 	
-	sudo echo -e "$dns_10" > "$db_server"
+	sudo echo -e "$dns10" > "$db_server"
 	# cat << EOF > "$db_server"
 	# \$TTL 15m
 	# @       IN SOA     dns.local. root.local. (
@@ -102,7 +94,4 @@ else
 	
 	# Validation de la configuration de la zone
 	sudo systemctl restart named
-	
-	# Arrêt du serveur
-	sudo systemctl stop named
 fi
